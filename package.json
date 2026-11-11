@@ -1,0 +1,14 @@
+{
+  "name": "informatica-basica-equipe2",
+  "version": "1.0.0",
+  "description": "Equipe 2 — landing page, catálogo e organização do curso Informática Básica (projeto integrador de Educação a Distância)",
+  "private": true,
+  "scripts": {
+    "start": "npx --yes http-server -p 8080 -c-1",
+    "test": "node testes/aceite.js"
+  },
+  "devDependencies": {
+    "axe-core": "^4.10.0",
+    "playwright": "^1.47.0"
+  }
+}

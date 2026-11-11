@@ -12,7 +12,22 @@ Este repositório reúne só o desenvolvimento atribuído à Equipe 2. A platafo
 
 **Demonstração de aceite:** percurso da landing page até o curso, conferindo a ordem dos 6 módulos e dos 18 espaços de aula.
 
-**Tecnologia:** HTML, CSS e JavaScript puros, sem etapa de build e sem banco de dados. O visual segue o design system do Figma, o mesmo da plataforma integrada.
+> **Base para as demais equipes:** este projeto já traz a identidade visual, o layout, a navegação e a estrutura oficial do curso. As outras equipes podem partir dele para desenvolver suas etapas, sem começar do zero. Veja a seção [Como usar este projeto como base](#5-como-usar-este-projeto-como-base).
+
+## Tecnologias utilizadas
+
+| Tecnologia | Para que é usada |
+|---|---|
+| **HTML5** | Estrutura da página única (`index.html`), com marcação semântica e acessível |
+| **CSS3** | Design system em `css/styles.css`, com as cores, fontes e espaçamentos do Figma em variáveis CSS |
+| **JavaScript (ES Modules)** | Telas, rotas e dados, sem frameworks e sem etapa de build: o navegador lê os arquivos direto |
+| **Fonte Inter (Google Fonts)** | Tipografia do design system |
+| **Node.js + http-server** | Servidor local para rodar o site (`npm start`) |
+| **Playwright** | Testes automatizados no navegador, no computador e no celular |
+| **axe-core** | Verificação automática de acessibilidade (WCAG 2 AA) |
+| **Git + GitHub Pages** | Versionamento do código e publicação gratuita do site |
+
+Não há banco de dados nem login neste projeto: a estrutura do curso vem do arquivo `js/data/estrutura.js`.
 
 ---
 
@@ -72,7 +87,51 @@ No Windows, se os scripts estiverem bloqueados, use `npm.cmd` e `npx.cmd` nos co
 
 O registro dos testes, problemas e correções está em [`docs/TESTES.md`](docs/TESTES.md).
 
-## 5. Estrutura de pastas
+## 5. Como usar este projeto como base
+
+Este projeto pode servir de ponto de partida para as etapas de desenvolvimento das demais equipes. Ele já resolve o que é comum a todas:
+
+| Já pronto | Onde está |
+|---|---|
+| Identidade visual (cores, fontes, botões, cartões, avisos, campos) | `css/styles.css` |
+| Cabeçalho, menu (também no celular), rodapé e foco no título a cada troca de página | `index.html` e `js/app.js` |
+| Ícones, ilustrações dos módulos e avisos acessíveis | `js/ui.js` |
+| Estrutura oficial do curso, com os IDs combinados entre as equipes | `js/data/estrutura.js` e `docs/ESTRUTURA.md` |
+| Leitura da estrutura no mesmo formato da plataforma integrada | `js/api.js` → `api.estrutura()` |
+| Testes no navegador com verificação de acessibilidade | `testes/aceite.js` |
+
+### Para criar a tela de uma equipe
+
+1. Crie um arquivo em `js/paginas/`, por exemplo `js/paginas/sala.js`, seguindo o modelo de `curso.js`:
+   ```js
+   import { api } from '../api.js';
+   import { esc } from '../ui.js';
+
+   export default async function sala({ raiz, atual }) {
+     const { modulos } = await api.estrutura();
+     if (!atual()) return;
+     raiz.innerHTML = `<div class="container"><h1 tabindex="-1">Minha sala</h1>
+       <p>${modulos.length} módulos</p></div>`;
+   }
+   ```
+2. Em `js/app.js`, importe a tela e acrescente a rota na lista `ROTAS`:
+   ```js
+   import sala from './paginas/sala.js';
+   // ...
+   { p: '/sala', pagina: sala, titulo: 'Minha sala' },
+   ```
+3. Ainda em `js/app.js`, na função `cabecalho`, acrescente o link do menu: `link('/sala', 'Minha sala', 'video')`.
+4. Abra `http://localhost:8080/#/sala` para ver a nova tela.
+
+### Combinados para manter tudo integrado
+
+- **Não mude os IDs** de curso, módulos, aulas e atividades (`info-basica`, `m1`…`m6`, `m1-a1`…`m6-a3`, `m1-at`…`m6-at`). Eles são usados por todas as equipes.
+- Use os componentes e as classes do `styles.css` em vez de criar cores e estilos novos.
+- Mostre textos que vêm de dados sempre com `esc()`, para evitar problemas de segurança.
+- Use rótulos em todos os campos e textos de erro (não só cor), mantendo o foco visível.
+- Não use links `href="#algo"` para pular para uma parte da página: o roteador entende como outra página. Use um botão com `scrollIntoView`, como o **Ver os 6 módulos** da landing.
+
+## 6. Estrutura de pastas
 
 ```
 index.html              página única (layout comum)
